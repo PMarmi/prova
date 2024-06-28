@@ -34,7 +34,7 @@ class ProjecteResource extends Resource
                 TextInput::make('nom')
                     ->required()
                     ->label('Nom del Projecte')
-                    ->autofocus()
+                    // ->autofocus()
                     ->placeholder('Escriu aquí el nom del projecte')
                     ->extraInputAttributes(['style' => 'font-weight: bolder; font-size: 1.1rem;'])
                     ->columnSpan(12),
