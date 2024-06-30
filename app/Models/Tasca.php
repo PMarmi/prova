@@ -13,14 +13,14 @@ class Tasca extends Model
         "descripcio",
         "projecte_id",
     ];
-
-public function projecte()
-{
-    return $this->belongsTo(Projecte::class);
-}
-public function comentaris()
-{
-	return $this->hasMany(Comentari::class);
-}
+    public function projecte()
+    {
+        return $this->belongsTo(Projecte::class);
+    }
+    
+    public function comentaris()
+    {
+	    return $this->hasMany(Comentari::class);
+    }
 
 }

@@ -2,13 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProjecteResource\Pages;
-use App\Filament\Resources\ProjecteResource\RelationManagers;
+use App\Filament\Resources\TascasResource\Pages;
+use App\Filament\Resources\TascasResource\RelationManagers;
+use App\Models\Tasca;
 use App\Models\Projecte;
-use App\Models\Usuari;
 use Filament\Forms;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -19,11 +17,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use PhpParser\Node\Stmt\Label;
 
-class ProjecteResource extends Resource
+class TascasResource extends Resource
 {
-    protected static ?string $model = Projecte::class;
+    protected static ?string $model = Tasca::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -32,21 +29,13 @@ class ProjecteResource extends Resource
         return $form
             ->schema([
                 TextInput::make('nom')
+                    ->label('Nom de la tasca')
                     ->required()
-                    ->label('Nom del Projecte')
                     ->autofocus()
-                    ->placeholder('Escriu aquí el nom del projecte')
-                    ->extraInputAttributes(['style' => 'font-weight: bolder; font-size: 1.1rem;'])
-                    ->columnSpan(12),
-                // Section::make('Rate limiting')
-                //     // ->description('Prevent abuse by limiting the number of requests per period')
-                //     ->schema([
-                //         TextInput::make('nom')->columnSpan(6),
-                //         TextInput::make('usuari_id')->columnSpan(2)
-                //     ])->columns(8)->collapsed()->columnSpan(10),
-                Select::make('usuari_id')
-                    ->label('Usuari')
-                    ->options(Usuari::pluck('nom', 'id'))
+                    ->columnSpan(9),
+                Select::make('projecte_id')
+                    ->label('Projecte')
+                    ->options(Projecte::pluck('nom', 'id'))
                     ->searchable()
                     ->required()
                     ->columnSpan(3),
@@ -54,7 +43,7 @@ class ProjecteResource extends Resource
                     ->label('Descripció')
                     ->columnSpan(12),
             ])->columns(12);
-    }
+        }
 
     public static function table(Table $table): Table
     {
@@ -62,14 +51,13 @@ class ProjecteResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('usuari.nom')
-                    ->label('Usuari')
+                TextColumn::make('projecte.nom')
+                    ->label('Nom del projecte')
                     ->sortable()
-                    ->toggleable()
                     ->wrap()
                     ->searchable(),
                 TextColumn::make('nom')
-                    ->label('Nom del projecte')
+                    ->label('Nom de la Tasca')
                     ->sortable()
                     ->weight('bold')
                     ->size('xl')
@@ -80,8 +68,6 @@ class ProjecteResource extends Resource
                     ->label(__("Descripció"))
                     ->wrap()
                     ->searchable(),
-                TextColumn::make('created_at')
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //
@@ -89,7 +75,6 @@ class ProjecteResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -108,10 +93,10 @@ class ProjecteResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListProjectes::route('/'),
-            'create' => Pages\CreateProjecte::route('/create'),
-            'view' => Pages\ViewProjecte::route('/{record}'),
-            'edit' => Pages\EditProjecte::route('/{record}/edit'),
+            'index' => Pages\ListTascas::route('/'),
+            'create' => Pages\CreateTascas::route('/create'),
+            'view' => Pages\ViewTascas::route('/{record}'),
+            'edit' => Pages\EditTascas::route('/{record}/edit'),
         ];
     }
 }

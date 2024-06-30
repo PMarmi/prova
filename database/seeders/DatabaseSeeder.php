@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
         );
 
         \App\Models\Projecte::factory(15)->create();
-
+        \App\Models\Tasca::factory(15)->create();
+        \App\Models\Comentari::factory(15)->create();
 
 
         // \App\Models\User::factory(10)->create();
