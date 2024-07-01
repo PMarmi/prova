@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class TascasResource extends Resource
 {
     protected static ?string $model = Tasca::class;
+    protected static ?int $navigationSort = 3;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -73,8 +74,8 @@ class TascasResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('')->tooltip('Ver'),
+                Tables\Actions\EditAction::make()->label('')->tooltip('Editar'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

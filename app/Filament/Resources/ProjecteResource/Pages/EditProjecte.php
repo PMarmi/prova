@@ -10,11 +10,16 @@ class EditProjecte extends EditRecord
 {
     protected static string $resource = ProjecteResource::class;
 
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
     protected function getHeaderActions(): array
     {
         return [
             Actions\ViewAction::make(),
-            Actions\DeleteAction::make(),
+            // Actions\DeleteAction::make(),
         ];
     }
 }

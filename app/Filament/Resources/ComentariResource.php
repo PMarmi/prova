@@ -17,10 +17,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ComentariResource extends Resource
 {
     protected static ?string $model = Comentari::class;
+    protected static ?int $navigationSort = 4;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -53,6 +55,7 @@ class ComentariResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('tasca.nom')
                     ->label('Tasca')
@@ -72,13 +75,13 @@ class ComentariResource extends Resource
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('id','desc')
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('')->tooltip('Ver'),
+                Tables\Actions\EditAction::make()->label('')->tooltip('Editar'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

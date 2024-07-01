@@ -9,7 +9,10 @@ use Filament\Resources\Pages\EditRecord;
 class EditTascas extends EditRecord
 {
     protected static string $resource = TascasResource::class;
-
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
     protected function getHeaderActions(): array
     {
         return [

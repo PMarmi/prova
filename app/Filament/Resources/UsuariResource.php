@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class UsuariResource extends Resource
 {
     protected static ?string $model = Usuari::class;
+    protected static ?int $navigationSort = 1;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -29,6 +30,7 @@ class UsuariResource extends Resource
             ->schema([
                 TextInput::make('nom')
                 ->required()
+                ->autofocus()
                 ->label('Nom'),
                 TextInput::make('edat')
                 ->integer(1)
@@ -57,9 +59,8 @@ class UsuariResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\ViewAction::make()->label('')->tooltip('Ver'),
+                Tables\Actions\EditAction::make()->label('')->tooltip('Editar'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
