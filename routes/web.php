@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VariasFunciones;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('genera',  [App\Http\Controllers\VariasFunciones::class, 'genera']);
+Route::get('generaMuchos/{cuantas}',  [App\Http\Controllers\VariasFunciones::class, 'generaMuchos']);
+Route::get('fresh/{cantidad}',  [App\Http\Controllers\DatosController::class, 'fresh']);

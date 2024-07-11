@@ -8,12 +8,15 @@ use App\Models\Usuari;
 use Faker\Core\Number;
 use Filament\Forms;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -46,17 +49,47 @@ class UsuariResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('nom')
-                ->label('Nom')
-                ->sortable()
-                ->searchable(),
+                    ->label('Nom')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('edat')
-                ->label('Edat')
-                ->sortable()
-                ->searchable(),
+                    ->label('Edat')
+                    ->sortable()
+                    // ->searchable()
+                    ->toggleable(),
+                TextColumn::make('created_at')
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
+            ->filters([            
+                Filter::make('created_at')
+                ->form([
+                    TextInput::make('edat_desde')->label('Edat Des de')
+                    ->integer()
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(99),
+                    TextInput::make('edat_hasta')->label('Edat Fins a')
+                    ->integer()
+                    ->numeric()
+                    ->minValue(0)
+                    ->maxValue(99),
+                ])
+                ->query(function (Builder $query, array $data): Builder {
+                    return $query
+                        ->when(
+                            $data['edat_desde'],
+                            fn (Builder $query, $date): Builder => $query->where('edat', '>=', $data['edat_desde']),
+                            )
+                        ->when(
+                            $data['edat_hasta'],
+                            fn (Builder $query, $date): Builder => $query->where('edat', '<=', $data['edat_hasta']),
+                        );
+                })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->label('')->tooltip('Ver'),

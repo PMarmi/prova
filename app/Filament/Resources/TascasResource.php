@@ -17,6 +17,9 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Components\DatePicker;
+use Filament\Tables\Filters\Filter;
 
 class TascasResource extends Resource
 {
@@ -64,14 +67,36 @@ class TascasResource extends Resource
                     ->size('xl')
                     ->color('primary')
                     ->wrap()
-                    ->searchable(), 
+                    // ->searchable()
+                    ->searchable(isIndividual: true, isGlobal: true)
+                    , 
                 TextColumn::make('descripcio')
                     ->label(__("Descripció"))
                     ->wrap()
-                    ->searchable(),
+                    ->searchable(isIndividual: true, isGlobal: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('projecte')
+                    ->label('Projecte')
+                    ->searchable()
+                    ->preload()
+                    ->relationship('projecte', 'nom'),
+                Filter::make('created_at')
+                    ->form([
+                        DatePicker::make('created_from')->label('Creado desde'),
+                        DatePicker::make('created_until')->label('Creado hasta'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('created_at', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()->label('')->tooltip('Ver'),
