@@ -2,27 +2,27 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ProjecteResource\Pages;
-use App\Filament\Resources\ProjecteResource\RelationManagers;
-use App\Models\Projecte;
-use App\Models\Usuari;
 use Filament\Forms;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
+use App\Models\Usuari;
+use App\Models\Projecte;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use PhpParser\Node\Stmt\Label;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Forms\Components\DatePicker;
+use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\RichEditor;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\ProjecteResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use App\Filament\Resources\ProjecteResource\RelationManagers;
 
 class ProjecteResource extends Resource
 {
@@ -57,7 +57,20 @@ class ProjecteResource extends Resource
                 Textarea::make('descripcio')
                     ->label('Descripció')
                     ->columnSpan(12),
-            ])->columns(12);
+                SpatieMediaLibraryFileUpload::make('adjunt')
+                    ->multiple()
+                    ->preserveFileNames()
+                    ->downloadable()
+                    ->openable()
+                    // ->label(__('Fichero Notario'))
+                    ->preserveFilenames()
+                    ->disk('public')  //opcional - per defecte
+                    ->directory('adjunts') 
+                    ->collection('projectes')
+                    ->maxSize(30000)    // bytes 30 MB
+                    ->acceptedFileTypes(['application/pdf'])
+                    ->columnSpan(12),
+                ])->columns(12);
     }
 
     public static function table(Table $table): Table
@@ -65,6 +78,7 @@ class ProjecteResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('id')
+                    ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('usuari.nom')
                     ->label('Usuari')
@@ -86,7 +100,7 @@ class ProjecteResource extends Resource
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('id','desc')
             ->filters([
                 SelectFilter::make('usuari')->label('Usuari')
                     ->relationship('usuari', 'nom'),
